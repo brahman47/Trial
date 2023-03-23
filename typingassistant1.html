@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>AT Typing Assistant ver 1.0</title>
+    <style>
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+
+      th,
+      td {
+        text-align: left;
+        padding: 8px;
+      }
+
+      tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+
+      .copy-btn {
+        border: none;
+        color: white;
+        background-color: #ff69b4;
+        padding: 8px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+        border-radius: 5px;
+      }
+
+      .copy-btn:hover {
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>AT Typing Assistant ver 1.0</h1>
+    <div>
+      <label for="search">Search Text:</label>
+      <input type="text" id="search" name="search">
+      <button id="search-btn">Search</button>
+    </div>
+    <br>
+    <table>
+      <thead>
+        <tr>
+          <th>Serial No.</th>
+          <th>Text</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="texts">
+      </tbody>
+    </table>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
+    <script>
+      const url =
+        "https://raw.githubusercontent.com/brahman47/repositoryver2/main/AT%20Assistant%20sheet%20version2%20-%20Sheet1.csv";
+
+      fetch(url)
+        .then((response) => response.text())
+        .then((data) => {
+          const parsedData = Papa.parse(data, { header: true });
+          const texts = parsedData.data;
+
+          const textsContainer = document.getElementById("texts");
+
+          let index = 0;
+          texts.forEach((text) => {
+            const serialNo = ++index;
+            const textContent = text["Text"];
+            const textRow = document.createElement("tr");
+            const serialNoCell = document.createElement("td");
+            const textContentCell = document.createElement("td");
+            const copyBtnCell = document.createElement("td");
+            const copyBtnElement = document.createElement("button");
+
+            serialNoCell.innerText = serialNo;
+            textContentCell.innerText = textContent;
+            copyBtnElement.innerText = "Copy";
+            copyBtnElement.classList.add("copy-btn");
+
+            copyBtnElement.addEventListener("click", () => {
+              navigator.clipboard.writeText(textContent);
+            });
+
+            textRow.appendChild(serialNoCell);
+            textRow.appendChild(textContentCell);
+            copyBtnCell.appendChild(copyBtnElement);
+            textRow.appendChild(copyBtnCell);
+            textsContainer.appendChild(textRow);
+          });
+
+          const searchInput = document.getElementById("search");
+          const searchButton = document.getElementById("search-btn");
+
+          searchButton.addEventListener("click", () => {
+            const searchText = searchInput.value.toLowerCase();
+            texts.forEach((text, index) => {
+              const textContent = text["Text"];
+              const textRow = textsContainer.children[index];
+              if (textContent.toLowerCase().includes(searchText)) {
+                textRow.style.display = "";
+              } else {
+                textRow.style.display = "none";
+              }
+            });
+          });
+        });
+    </script>
+ 

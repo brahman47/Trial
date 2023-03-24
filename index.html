@@ -47,7 +47,6 @@
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         transition: background-color 0.3s;
       }
-
       .dashboard-btn:hover,
       .class-rules-btn:hover {
         cursor: pointer;
@@ -59,6 +58,10 @@
 
       .class-rules-btn:hover {
         background-color: #ff9eb5;
+      }
+
+      .dashboard-btn:hover {
+        background-color: darkviolet;
       }
 
       .timer-btn {
@@ -113,121 +116,116 @@
       <input type="text" id="search" name="search">
       <button id="search-btn">Search</button>
     </div>
+   
     <br>
-          <table>
-        <thead>
-          <tr>
-            <th>Serial No.</th>
-            <th>Text</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="texts">
-        </tbody>
-      </table>
-      <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
-      <script>
-        const url =
-          "https://raw.githubusercontent.com/brahman47/repositoryver2/main/AT%20Assistant%20sheet%20version2%20-%20Sheet1.csv";
+    <table>
+      <thead>
+        <tr>
+          <th>Serial No.</th>
+          <th>Text</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="texts">
+      </tbody>
+    </table>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
+    <script>
+      const url =
+        "https://raw.githubusercontent.com/brahman47/repositoryver2/main/AT%20Assistant%20sheet%20version2%20-%20Sheet1.csv";
 
-        fetch(url)
-          .then((response) => response.text())
-          .then((data) => {
-            const parsedData = Papa.parse(data, { header: true });
-            const texts = parsedData.data;
+      fetch(url)
+        .then((response) => response.text())
+        .then((data) => {
+          const parsedData = Papa.parse(data, { header: true });
+          const texts = parsedData.data;
+          const textsContainer = document.getElementById("texts");
+          let index = 0;
+          texts.forEach((text) => {
+            const serialNo = ++index;
+            const textContent = text["Text"];
+            const textRow = document.createElement("tr");
+            const serialNoCell = document.createElement("td");
+            const textContentCell = document.createElement("td");
+            const copyBtnCell = document.createElement("td");
+            const copyBtnElement = document.createElement("button");
 
-            const textsContainer = document.getElementById("texts");
-            let index = 0;
-            texts.forEach((text) => {
-              const serialNo = ++index;
-              const textContent = text["Text"];
-              const textRow = document.createElement("tr");
-              const serialNoCell = document.createElement("td");
-              const textContentCell = document.createElement("td");
-              const copyBtnCell = document.createElement("td");
-              const copyBtnElement = document.createElement("button");
+            serialNoCell.innerText = serialNo;
+            textContentCell.innerText = textContent;
+            copyBtnElement.innerText = "Copy";
+            copyBtnElement.classList.add("copy-btn");
 
-              serialNoCell.innerText = serialNo;
-              textContentCell.innerText = textContent;
-              copyBtnElement.innerText = "Copy";
-              copyBtnElement.classList.add("copy-btn");
-
-              copyBtnElement.addEventListener("click", () => {
-                navigator.clipboard.writeText(textContent);
-              });
-
-              textRow.appendChild(serialNoCell);
-              textRow.appendChild(textContentCell);
-              copyBtnCell.appendChild(copyBtnElement);
-              textRow.appendChild(copyBtnCell);
-              textsContainer.appendChild(textRow);
+            copyBtnElement.addEventListener("click", () => {
+              navigator.clipboard.writeText(textContent);
             });
 
-            const searchInput = document.getElementById("search");
-            const searchButton = document.getElementById("search-btn");
+            textRow.appendChild(serialNoCell);
+            textRow.appendChild(textContentCell);
+            copyBtnCell.appendChild(copyBtnElement);
+            textRow.appendChild(copyBtnCell);
+            textsContainer.appendChild(textRow);
+          });
+          const searchInput = document.getElementById("search");
+          const searchButton = document.getElementById("search-btn");
 
-            searchButton.addEventListener("click", () => {
-              const searchText = searchInput.value.toLowerCase();
-              texts.forEach((text, index) => {
-                const textContent = text["Text"];
-                const textRow = textsContainer.children[index];
-                if (textContent.toLowerCase().includes(searchText)) {
-                  textRow.style.display = "";
-                } else {
-                  textRow.style.display = "none";
-                }
-              });
+          searchButton.addEventListener("click", () => {
+            const searchText = searchInput.value.toLowerCase();
+            texts.forEach((text, index) => {
+              const textContent = text["Text"];
+              const textRow = textsContainer.children[index];
+              if (textContent.toLowerCase().includes(searchText)) {
+                textRow.style.display = "";
+              } else {
+                textRow.style.display = "none";
+              }
             });
           });
-
-        const classRulesButton = document.getElementById("class-rules-btn");
-        const classRules = `Here are some rules to follow to make sure we have a smooth and enjoyable session:
-
-        1. Please keep your microphone on mute at all times.
-        2. You can keep your camera on if you'd like.
-        3. If you have any questions or doubts, you can ask them in the Class Forum.
-        4. If you have any technical issues, please use the troubleshoot option (three dots) on your screen. If you continue to have problems, you can try joining the class through learn.byjus.com.
-        5. If you have any other issues, let me know in the Class Forum.
-
-        Let's have a great time learning together!`;
-
-        classRulesButton.addEventListener("click", () => {
-          navigator.clipboard.writeText(classRules);
-          classRulesButton.textContent = "Class Rules Copied";
-          setTimeout(() => {
-            classRulesButton.textContent = "Class Rules";
-          }, 2000);
         });
 
-        const timerButton = document.getElementById("timer-btn");
-        let isTimerRunning = false;
-        let timer;
+      const classRulesButton = document.getElementById("class-rules-btn");
+      const classRules = `Here are some rules to follow to make sure we have a smooth and enjoyable session:
+      1. Please keep your microphone on mute at all times.
+      2. You can keep your camera on if you'd like.
+      3. If you have any questions or doubts, you can ask them in the Class Forum.
+      4. If you have any technical issues, please use the troubleshoot option (three dots) on your screen. If you continue to have problems, you can try joining the class through learn.byjus.com.
+      5. If you have any other issues, let me know in the Class Forum.
+      Let's have a great time learning together!`;
+      classRulesButton.addEventListener("click", () => {
+        navigator.clipboard.writeText(classRules);
+        classRulesButton.textContent = "Class Rules Copied";
+        setTimeout(() => {
+          classRulesButton.textContent = "Class Rules";
+        }, 2000);
+      });
 
-              function playBeep() {
-          const beep = new Audio("https://www.soundjay.com/buttons/sounds/beep-06.mp3");
-          beep.play();
-        }
+      const timerButton = document.getElementById("timer-btn");
+      let isTimerRunning = false;
+      let timer;
 
-        timerButton.addEventListener("click", () => {
-          if (isTimerRunning) {
-            clearTimeout(timer);
+      function playBeep() {
+       
+        const beep = new Audio("https://www.soundjay.com/buttons/sounds/beep-06.mp3");
+        beep.play();
+      }
+
+      timerButton.addEventListener("click", () => {
+        if (isTimerRunning) {
+          clearTimeout(timer);
+          timerButton.textContent = "2 Minute Timer";
+          timerButton.classList.remove("blinking");
+          isTimerRunning = false;
+        } else {
+          timerButton.textContent = "Stop Timer";
+          timerButton.classList.add("blinking");
+          isTimerRunning = true;
+          timer = setTimeout(() => {
+            isTimerRunning = false;
             timerButton.textContent = "2 Minute Timer";
             timerButton.classList.remove("blinking");
-            isTimerRunning = false;
-          } else {
-            timerButton.textContent = "Stop Timer";
-            timerButton.classList.add("blinking");
-            isTimerRunning = true;
-            timer = setTimeout(() => {
-              isTimerRunning = false;
-              timerButton.textContent = "2 Minute Timer";
-              timerButton.classList.remove("blinking");
-              playBeep();
-            }, 2 * 60 * 1000);
-          }
-        });
-      </script>
-    </body>
-  </html>
-
-
+            playBeep();
+          }, 2 * 60 * 1000);
+        }
+      });
+    </script>
+  </body>
+</html>

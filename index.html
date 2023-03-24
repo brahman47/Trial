@@ -33,10 +33,35 @@
       .copy-btn:hover {
         cursor: pointer;
       }
+
+      .dashboard-btn {
+        display: inline-block;
+        padding: 8px 16px;
+        background-color: violet;
+        color: white;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 15px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s;
+      }
+
+      .dashboard-btn:hover {
+        background-color: darkviolet;
+        cursor: pointer;
+      }
+
+      .button-container {
+        text-align: right;
+      }
     </style>
   </head>
   <body>
     <h1>AT Typing Assistant ver 1.0</h1>
+    <div class="button-container">
+      <a href="https://tutor-plus.tllms.com/dashboard" target="_blank" class="dashboard-btn">Dashboard</a>
+    </div>
     <div>
       <label for="search">Search Text:</label>
       <input type="text" id="search" name="search">
@@ -66,8 +91,7 @@
           const texts = parsedData.data;
 
           const textsContainer = document.getElementById("texts");
-
-          let index = 0;
+  let index = 0;
           texts.forEach((text) => {
             const serialNo = ++index;
             const textContent = text["Text"];
@@ -111,3 +135,4 @@
         });
     </script>
  
+

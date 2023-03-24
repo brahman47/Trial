@@ -52,6 +52,41 @@
         cursor: pointer;
       }
 
+      .timer-btn {
+        display: inline-block;
+        padding: 8px 16px;
+        background-color: silver;
+        color: white;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 15px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s;
+        margin-right: 10px;
+      }
+
+      .timer-btn:hover {
+        background-color: darkgray;
+        cursor: pointer;
+      }
+
+      @keyframes blink {
+        0% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.4;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+
+      .blinking {
+        animation: blink 1s linear infinite;
+      }
+
       .button-container {
         text-align: right;
       }
@@ -60,6 +95,7 @@
   <body>
     <h1>AT Typing Assistant ver 1.0</h1>
     <div class="button-container">
+      <button id="timer-btn" class="timer-btn">2 Minute Timer</button>
       <a href="https://tutor-plus.tllms.com/dashboard" target="_blank" class="dashboard-btn">Dashboard</a>
     </div>
     <div>
@@ -81,7 +117,7 @@
     </table>
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
     <script>
-      const url =
+          const url =
         "https://raw.githubusercontent.com/brahman47/repositoryver2/main/AT%20Assistant%20sheet%20version2%20-%20Sheet1.csv";
 
       fetch(url)
@@ -91,7 +127,7 @@
           const texts = parsedData.data;
 
           const textsContainer = document.getElementById("texts");
-  let index = 0;
+          let index = 0;
           texts.forEach((text) => {
             const serialNo = ++index;
             const textContent = text["Text"];
@@ -133,6 +169,35 @@
             });
           });
         });
+
+      const timerButton = document.getElementById("timer-btn");
+      let isTimerRunning = false;
+      let timer;
+
+      function playBeep() {
+        const beep = new Audio("https://www.soundjay.com/buttons/sounds/beep-06.mp3");
+        beep.play();
+      }
+
+      timerButton.addEventListener("click", () => {
+        if (isTimerRunning) {
+          clearTimeout(timer);
+          timerButton.textContent = "2 Minute Timer";
+          timerButton.classList.remove("blinking");
+          isTimerRunning = false;
+        } else {
+          timerButton.textContent = "Stop Timer";
+          timerButton.classList.add("blinking");
+          isTimerRunning = true;
+          timer = setTimeout(() => {
+            isTimerRunning = false;
+            timerButton.textContent = "2 Minute Timer";
+            timerButton.classList.remove("blinking");
+            playBeep();
+          }, 2 * 60 * 1000);
+        }
+      });
     </script>
- 
+  </body>
+</html>
 

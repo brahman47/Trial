@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Session Tracker Assistant</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+$(document).ready(function() {
+  // Handle timestamp button click
+  $('#timestamp-btn').click(function() {
+    var timestamp = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+    document.execCommand('insertHTML', false, '<br><br>At ' + timestamp + ': <br>');
+  });
+
+  // Handle copy button click
+  $('#copy-btn').click(function() {
+    var content = convertToText($('.notepad-content')[0]);
+    copyToClipboard(content);
+    alert('Notepad content copied to clipboard!');
+  });
+});
+
+// Recursive function to convert child nodes to text
+function convertToText(node) {
+  let text = '';
+  for (const child of node.childNodes) {
+    if (child.nodeType === Node.TEXT_NODE) {
+      text += child.textContent;
+    } else if (child.nodeType === Node.ELEMENT_NODE) {
+      if (child.tagName === 'BR') {
+        text += '\n';
+      } else if (child.tagName === 'DIV') {
+        text += '\n' + convertToText(child);
+      } else {
+        text += convertToText(child);
+      }
+    }
+  }
+  return text;
+}
+
+
+// Function to copy text to clipboard
+function copyToClipboard(text) {
+  var textarea = document.createElement('textarea');
+  textarea.value = text;
+  document.body.appendChild(textarea);
+  textarea.select();
+  document.execCommand('copy');
+  document.body.removeChild(textarea);
+}
+
+
+
+
+  </script>
+  <style>
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f6e9e9;
+    }
+
+    .notepad {
+      width: 600px;
+      height: 400px;
+      background-color: #fdd6d6;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 5px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .notepad-header {
+      padding: 10px;
+      background-color: #fcecec;
+      border-bottom: 1px solid #e0c1c1;
+    }
+
+    .notepad-content {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      line-height: 1.5;
+      outline: none;
+      overflow-y: auto;
+    }
+
+    .notepad-footer {
+      padding: 10px;
+      text-align: right;
+      background-color: #fcecec;
+      border-top: 1px solid #e0c1c1;
+    }
+
+    button {
+      background-color: #eaa7a7;
+      color: #fff;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+
+    button:hover {
+      background-color: #c76f6f;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="notepad">
+      <div class="notepad-header">
+        <button id="timestamp-btn">Include Timestamp</button>
+      </div>
+      <div class="notepad-content" contenteditable="true"></div>
+      <div class="notepad-footer">
+        <button id="copy-btn">Copy to Clipboard</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
